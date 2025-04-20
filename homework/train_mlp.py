@@ -51,7 +51,10 @@ def train(
 
     # Training loop
     for epoch in range(num_epoch):
-     
+        # Clear metrics at the beginning of the epoch
+        for key in metrics:
+            metrics[key].clear()
+
         model.train()
         # Iterate over training data
         
@@ -65,7 +68,6 @@ def train(
             track_right = track_right.float()
             waypoints = waypoints.float()
             mask = mask.float()
-
             # Training step
             optimizer.zero_grad()
             pred_waypoints = model(track_left, track_right)  # Get predicted waypoints
