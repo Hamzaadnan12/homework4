@@ -39,8 +39,8 @@ def train(
     model.train()
 
     # Load training and validation data (Make sure your dataset is correctly loaded)
-    train_data = load_data("drive_data/train", shuffle=True, batch_size=batch_size, num_workers=2)
-    val_data = load_data("drive_data/val", shuffle=False)
+    train_data = load_data("../drive_data/train", shuffle=True, batch_size=batch_size, num_workers=2)
+    val_data = load_data("../drive_data/val", shuffle=False)
 
     # Loss function and optimizer
     loss_func = torch.nn.MSELoss()  # For regression tasks like this, MSE is a good choice
