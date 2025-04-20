@@ -39,15 +39,11 @@ def train(
     model.train()
 
     # Load data
-    train_data = load_data("../drive_data/train", transform_pipeline="state_only", shuffle=True, batch_size=batch_size, num_workers=2)
-    val_data = load_data("../drive_data/val", transform_pipeline="state_only", shuffle=False, batch_size=batch_size, num_workers=0)
+    train_data = load_data("../drive_data/train", shuffle=True, batch_size=batch_size, num_workers=2)
+    val_data = load_data("../drive_data/val", shuffle=False, batch_size=batch_size, num_workers=2)
 
-    # Optimizer and loss function
     loss_func = torch.nn.MSELoss()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
-
-    #loss_func = torch.nn.MSELoss()
-    #optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     global_step = 0
 
@@ -59,11 +55,11 @@ def train(
         val_lateral_errors = []
 
         model.train()
-        for track_left, track_right, waypoints, mask in train_data:
-            track_left = track_left.to(device, dtype=torch.float)
-            track_right = track_right.to(device, dtype=torch.float)
-            waypoints = waypoints.to(device, dtype=torch.float)
-            mask = mask.to(device, dtype=torch.float)
+        for batch in train_data:
+            track_left = batch["track_left"].to(device, dtype=torch.float)
+            track_right = batch["track_right"].to(device, dtype=torch.float)
+            waypoints = batch["waypoints"].to(device, dtype=torch.float)
+            mask = batch["mask"].to(device, dtype=torch.float)
 
             optimizer.zero_grad()
             pred_waypoints = model(track_left, track_right)
@@ -77,11 +73,11 @@ def train(
 
         model.eval()
         with torch.no_grad():
-            for track_left, track_right, waypoints, mask in val_data:
-                track_left = track_left.to(device, dtype=torch.float)
-                track_right = track_right.to(device, dtype=torch.float)
-                waypoints = waypoints.to(device, dtype=torch.float)
-                mask = mask.to(device, dtype=torch.float)
+            for batch in val_data:
+                track_left = batch["track_left"].to(device, dtype=torch.float)
+                track_right = batch["track_right"].to(device, dtype=torch.float)
+                waypoints = batch["waypoints"].to(device, dtype=torch.float)
+                mask = batch["mask"].to(device, dtype=torch.float)
 
                 pred_waypoints = model(track_left, track_right)
                 longitudinal_error, lateral_error = compute_errors(pred_waypoints, waypoints)
