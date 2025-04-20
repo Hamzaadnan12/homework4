@@ -51,14 +51,20 @@ def train(
 
     # Training loop
     for epoch in range(num_epoch):
-        # Clear metrics at the beginning of the epoch
-        for key in metrics:
-            metrics[key].clear()
-
+     
         model.train()
-
-        for track_left, track_right, waypoints, mask in train_data:
-            track_left, track_right, waypoints, mask = track_left.to(device), track_right.to(device), waypoints.to(device), mask.to(device)
+        # Iterate over training data
+        
+        for batch in train_data:
+            track_left = batch["track_left"].to(device)
+            track_right = batch["track_right"].to(device)
+            waypoints = batch["waypoints"].to(device)
+            mask = batch["mask"].to(device)
+            # Ensure the batch is correctly formatted
+            track_left = track_left.float()
+            track_right = track_right.float()
+            waypoints = waypoints.float()
+            mask = mask.float()
 
             # Training step
             optimizer.zero_grad()
