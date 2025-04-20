@@ -47,20 +47,19 @@ def train(
 
     global_step = 0
 
-    # Training loop
     for epoch in range(num_epoch):
-        # Metrics to accumulate errors
+        # Reset metrics
         train_longitudinal_errors = []
         train_lateral_errors = []
         val_longitudinal_errors = []
         val_lateral_errors = []
 
         model.train()
-        for batch in train_data:
-            track_left = batch["track_left"].to(device, dtype=torch.float)
-            track_right = batch["track_right"].to(device, dtype=torch.float)
-            waypoints = batch["waypoints"].to(device, dtype=torch.float)
-            mask = batch["mask"].to(device, dtype=torch.float)
+        for track_left, track_right, waypoints, mask in train_data:
+            track_left = track_left.to(device, dtype=torch.float)
+            track_right = track_right.to(device, dtype=torch.float)
+            waypoints = waypoints.to(device, dtype=torch.float)
+            mask = mask.to(device, dtype=torch.float)
 
             optimizer.zero_grad()
             pred_waypoints = model(track_left, track_right)
@@ -74,18 +73,18 @@ def train(
 
         model.eval()
         with torch.no_grad():
-            for batch in val_data:
-                track_left = batch["track_left"].to(device, dtype=torch.float)
-                track_right = batch["track_right"].to(device, dtype=torch.float)
-                waypoints = batch["waypoints"].to(device, dtype=torch.float)
-                mask = batch["mask"].to(device, dtype=torch.float)
+            for track_left, track_right, waypoints, mask in val_data:
+                track_left = track_left.to(device, dtype=torch.float)
+                track_right = track_right.to(device, dtype=torch.float)
+                waypoints = waypoints.to(device, dtype=torch.float)
+                mask = mask.to(device, dtype=torch.float)
 
                 pred_waypoints = model(track_left, track_right)
                 longitudinal_error, lateral_error = compute_errors(pred_waypoints, waypoints)
                 val_longitudinal_errors.append(longitudinal_error)
                 val_lateral_errors.append(lateral_error)
 
-        # Convert lists to tensors and compute means
+        # Log metrics
         epoch_train_longitudinal_error = torch.tensor(train_longitudinal_errors).mean()
         epoch_train_lateral_error = torch.tensor(train_lateral_errors).mean()
         epoch_val_longitudinal_error = torch.tensor(val_longitudinal_errors).mean()
@@ -107,7 +106,6 @@ def train(
 
         global_step += 1
 
-    # Save model
     model_path = log_dir / f"{model_name}.th"
     torch.save(model.state_dict(), model_path)
     print(f"Model saved to {model_path}")
@@ -115,7 +113,6 @@ def train(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-
     parser.add_argument("--exp_dir", type=str, default="logs")
     parser.add_argument("--model_name", type=str, required=True)
     parser.add_argument("--num_epoch", type=int, default=50)
