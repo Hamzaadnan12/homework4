@@ -39,8 +39,8 @@ def train(
     model.train()
 
     # Load data
-    train_data = load_data("/drive_data/train", shuffle=True, batch_size=batch_size, num_workers=2)
-    val_data = load_data("/drive_data/val", shuffle=False, batch_size=batch_size, num_workers=2)
+    train_data = load_data("drive_data/train", shuffle=True, batch_size=batch_size, num_workers=2)
+    val_data = load_data("drive_data/val", shuffle=False, batch_size=batch_size, num_workers=2)
 
     loss_func = torch.nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
