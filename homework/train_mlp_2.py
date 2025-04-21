@@ -22,7 +22,7 @@ def compute_errors(predictions, targets):
     return longitudinal_error, lateral_error
 
 def train(
-    model_name: str = "mlp_planner",
+    model_name: str = "mlp_planner.th",
     transform_pipeline="state_only",
     num_workers: int = 2,
     num_epoch: int = 50,
