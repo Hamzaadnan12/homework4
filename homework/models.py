@@ -24,7 +24,7 @@ class MLPPlanner(nn.Module):
         self.n_track = n_track
         self.n_waypoints = n_waypoints
 
-        input_dim = n_track * 2  # We concatenate left and right, so input size is n_track * 2
+        input_dim = n_track * 4  # We concatenate left and right, so input size is n_track * 2
         
         hidden_dim = 128
         self.fc1 = nn.Linear(input_dim, hidden_dim)  # Flatten input (left + right)
