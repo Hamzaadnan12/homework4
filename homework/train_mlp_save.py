@@ -39,8 +39,8 @@ def train(
     model.train()
 
     # Load data
-    train_data = load_data("drive_data/train", shuffle=True, batch_size=batch_size, num_workers=2)
-    val_data = load_data("drive_data/val", shuffle=False, batch_size=batch_size, num_workers=2)
+    train_data = load_data("../drive_data/train", shuffle=True, batch_size=batch_size, num_workers=2)
+    val_data = load_data("../drive_data/val", shuffle=False, batch_size=batch_size, num_workers=2)
 
     loss_func = torch.nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -66,9 +66,9 @@ def train(
             loss.backward()
             optimizer.step()
 
-            longitudinal_error, lateral_error = compute_errors(pred_waypoints, waypoints)
-            train_longitudinal_errors.append(longitudinal_error)
-            train_lateral_errors.append(lateral_error)
+            #longitudinal_error, lateral_error = compute_errors(pred_waypoints, waypoints)
+            #train_longitudinal_errors.append(longitudinal_error)
+            #train_lateral_errors.append(lateral_error)
 
         model.eval()
         with torch.no_grad():
@@ -76,12 +76,11 @@ def train(
                 track_left = batch["track_left"].to(device, dtype=torch.float)
                 track_right = batch["track_right"].to(device, dtype=torch.float)
                 waypoints = batch["waypoints"].to(device, dtype=torch.float)
-                mask = batch["mask"].to(device, dtype=torch.float)
 
                 pred_waypoints = model(track_left, track_right)
-                longitudinal_error, lateral_error = compute_errors(pred_waypoints, waypoints)
-                val_longitudinal_errors.append(longitudinal_error)
-                val_lateral_errors.append(lateral_error)
+                #longitudinal_error, lateral_error = compute_errors(pred_waypoints, waypoints)
+                #val_longitudinal_errors.append(longitudinal_error)
+                #val_lateral_errors.append(lateral_error)
 
         # Log metrics
         epoch_train_longitudinal_error = torch.tensor(train_longitudinal_errors).mean()
