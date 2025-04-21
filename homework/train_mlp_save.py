@@ -5,9 +5,9 @@ from pathlib import Path
 import torch
 import torch.utils.tensorboard as tb
 
-from models import MLPPlanner
-from metrics import compute_errors
-from datasets.road_dataset import load_data
+from .models import MLPPlanner
+
+from .datasets.road_dataset import load_data
 
 
 def train(
@@ -56,10 +56,10 @@ def train(
 
         model.train()
         for batch in train_data:
+            print(batch)
             track_left = batch["track_left"].to(device, dtype=torch.float)
             track_right = batch["track_right"].to(device, dtype=torch.float)
             waypoints = batch["waypoints"].to(device, dtype=torch.float)
-            mask = batch["mask"].to(device, dtype=torch.float)
 
             optimizer.zero_grad()
             pred_waypoints = model(track_left, track_right)

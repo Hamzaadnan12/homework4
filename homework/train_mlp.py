@@ -49,8 +49,9 @@ def train(
         train_losses = []
         model.train()
         for batch in train_loader:
+            print(batch)
             optimizer.zero_grad()
-
+            
             if model_name == "cnn_planner":
                 images = batch["image"].to(device)
                 targets = batch["waypoints"].to(device)
