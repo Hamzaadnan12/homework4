@@ -4,8 +4,8 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.utils.tensorboard as tb
-from models import MLPPlanner, TransformerPlanner, CNNPlanner, load_model, save_model
-from datasets.road_dataset import load_data
+from .models import MLPPlanner, TransformerPlanner, CNNPlanner, load_model, save_model
+from .datasets.road_dataset import load_data
 
 
 # Custom loss function based on longitudinal and lateral error
