@@ -35,7 +35,7 @@ def compute_errors(predictions, targets):
 
 # Main training function
 def train(
-    model_name: str = "cnn_planner.th",
+    model_name: str = "cnn_planner",
     transform_pipeline="state_only",
     num_workers: int = 2,
     num_epoch: int = 50,
