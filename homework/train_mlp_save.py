@@ -56,7 +56,6 @@ def train(
 
         model.train()
         for batch in train_data:
-            print(batch)
             track_left = batch["track_left"].to(device, dtype=torch.float)
             track_right = batch["track_right"].to(device, dtype=torch.float)
             waypoints = batch["waypoints"].to(device, dtype=torch.float)
