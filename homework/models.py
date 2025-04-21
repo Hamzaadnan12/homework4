@@ -48,9 +48,11 @@ class MLPPlanner(nn.Module):
         Returns:
             torch.Tensor: future waypoints with shape (b, n_waypoints, 2)
         """
-         # Flatten the track data (combine left and right track boundaries)
+        # Flatten the track data (combine left and right track boundaries)
         x = torch.cat([track_left, track_right], dim=-1)  # Shape (b, n_track, 4)
-        x = x.view(x.size(0), -1)  # Flatten to (b, n_track * 4)
+        
+        # Fix applied: Flatten to (b, n_track * 2) instead of (b, n_track * 4)
+        x = x.view(x.size(0), -1)  # Flatten to (b, n_track * 2)  <-- THIS IS THE FIX!
 
         # Pass through the MLP layers
         x = torch.relu(self.fc1(x))
@@ -61,6 +63,7 @@ class MLPPlanner(nn.Module):
         x = x.view(x.size(0), self.n_waypoints, 2)
 
         return x
+
 
 
 class TransformerPlanner(nn.Module):
